@@ -1,0 +1,159 @@
+﻿ <!-- Content Header (Page header) -->
+<style>
+    .has-error{
+        font-weight:bold;
+        color:red;
+    }
+</style>
+<section class="content-header">
+    <h1>
+        Thêm mới sản phẩm
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+        <li><a href="#">Sản phẩm</a></li>
+        <li><a ui-sref="product_categories">Sản phẩm</a></li>
+        <li class="active">sản phẩm</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">Thêm mới</h3>
+        </div><!-- /.box-header -->
+        <!-- form start -->
+        <form class="form-horizontal" novalidate name="frmAddProduct" role="form" ng-submit="AddProduct()">
+            <div class="box-body">
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Tên sản phẩm</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" ng-maxlength="6" ng-change="GetSeoTitle()" required name="name" ng-model="Product.Name" />
+                        <span ng-show="frmAddProduct.name.$invalid" class="has-error">Phải nhập tên sản phẩm</span><br />
+                        <span ng-show="frmAddProduct.name.$error.maxlength" class="has-error">Tên danh mục phải tối đa 6 kí tự</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Tiêu đề SEO</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" required name="alias" ng-model="Product.Alias">
+                        <span ng-show="frmAddProduct.alias.$invalid">Phải nhập tiêu đề SEO</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Mô tả ngắn</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="description" ng-model="Product.Description" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Danh mục</label>
+                    <div class="col-sm-10">
+                        <!--<select name="parentId" class="form-control" ng-model="Product.CategoryID" ng-options="option.ID as option.Name for option in flatFolders">
+        <option value="">Danh mục gốc</option>
+    </select>-->
+                        <ui-select ng-model="Product.CategoryID" theme="bootstrap" style="min-width: 300px;" title="Chọn danh mục">
+                            <ui-select-match placeholder="Vui lòng chọn danh mục">{{$select.selected.Name}}</ui-select-match>
+                            <ui-select-choices repeat="item.ID as item in ProductCategories | filter: $select.search">
+                                <div ng-bind-html="item.Name | highlight: $select.search"></div>
+                                <small>
+                                    Tên danh mục: {{item.Name}}
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+
+                        <input type="hidden" required name="parentId" ng-model="Product.CategoryID">
+                        <span ng-show="frmAddProduct.parentId.$invalid">Phải chọn danh mục</span>
+                    </div>
+
+                   
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Bảo hành</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" name="warranty" ng-model="Product.Warranty">(Tháng)
+
+                    </div>
+                </div>
+                <!--giá nhập-->
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Giá bán</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" required name="price" ng-model="Product.Price">
+                        <span ng-show="frmAddProduct.price.$invalid">Phải nhập giá bán</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Giá nhập</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" required name="orginalPrice" ng-model="Product.OriginalPrice">
+                        <span ng-show="frmAddProduct.originalPrice.$invalid">Phải nhập giá</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">giá khuyễn mãi</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" name="promotionPrice" ng-model="Product.promotionPrice">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Hình ảnh</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="image" ng-model="Product.Image">
+                        <button type="button" ng-click="ChooseImage()" class="btn btn-default">Chọn ảnh</button>
+                    </div>
+                </div>
+                <span ng-show="frmAddProduct.image.$invalid">Phải chọn hình ảnh</span>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Thêm ảnh</label>
+                    <div class="col-sm-10">
+                        <ul class="list-inline">
+                            <li ng-repeat="img in moreImages"><img ng-src="{{img}}" width="100" /></li>
+                        </ul>
+                        <button type="button" ng-click="ChooseMoreImage()" class="btn btn-default">Chọn ảnh</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Mô tả sản phẩm</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" ckeditor="ckeditorOptions" name="content" ng-model="Product.Content"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Meta Keyword</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="metaKeyword" ng-model="Product.MetaKeyword">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Meta Description</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" name="metaDiscription" ng-model="Product.MetaDesCription"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="status" ng-model="Product.Status" ng-checked="Product.Status" />Trạng thái
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="homeFlag" ng-model="Product.HomeFlag"> Hiển thị trang chủ
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.box-body -->
+            <div class="box-footer">
+                <button ui-sref="product_categories" class="btn btn-default">Hủy</button>
+                <!--nếu không thỏa điều kiện thì ẩn nút đó xuống-->
+                <button type="submit" ng-disabled="frmAddProduct.$invalid" class="btn btn-success pull-right">Lưu</button>
+            </div><!-- /.box-footer -->
+        </form>
+    </div><!-- /.box -->
+</section>

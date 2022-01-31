@@ -1,0 +1,47 @@
+﻿@model IEnumerable<TeduShop.Web.Models.ProductCategoryViewModel>
+<div class="sub-cate">
+    <div class=" top-nav rsidebar span_1_of_left">
+        <h3 class="cate">Danh mục sản phẩm</h3>
+        <ul class="menu">
+            @foreach (var category in Model.Where(x => x.ParentID == null))
+            {
+                var url = "/" + category.Alias + ".pc-" + category.ID + ".html";
+                var childCategories = Model.Where(x => x.ParentID == category.ID); //lấy tất cả thằng con
+                <li class="item1">
+                    <a href="@url" target="_self">
+                        @category.Name
+                        @{
+                            if (childCategories.Count() > 0)
+                            {
+                                <img class="arrow-img" src="/Assets/client/images/arrow1.png" alt="" />
+                            }
+                        }
+                    
+                    @if (childCategories.Count() > 0)
+                    {
+                        <ul class="cute">
+                            @foreach (var childCategory in childCategories)
+                            {
+                                var childUrl = "/" + childCategory.Alias + ".pc-" + childCategory.ID + ".html";
+                                <li class="subitem1"><a href="@childUrl">@childCategory.Name</a></li>
+                            }
+
+                        </ul>
+
+                    }
+                </a>
+                </li>
+            }
+</ul>
+</div>
+    <!--initiate accordion-->
+    <div class=" chain-grid menu-chain">
+        <a href="single.html"><img class="img-responsive chain" src="/Assets/client/images/wat.jpg" alt=" " /></a>
+        <div class="grid-chain-bottom chain-watch">
+            <span class="actual dolor-left-grid">300$</span>
+            <span class="reducedfrom">500$</span>
+            <h6><a href="single.html">Lorem ipsum dolor</a></h6>
+        </div>
+    </div>
+    <a class="view-all all-product" href="product.html">VIEW ALL PRODUCTS<span> </span></a>
+</div>

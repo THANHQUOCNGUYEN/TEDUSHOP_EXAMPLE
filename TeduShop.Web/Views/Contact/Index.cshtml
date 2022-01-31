@@ -1,0 +1,78 @@
+﻿@using TeduShop.Web.Models
+@using BotDetect.Web.Mvc;
+@model FeedbackViewModel
+
+@{
+    ViewBag.Title = "Liên hệ";
+    Layout = "~/Views/Shared/_Layouts.cshtml";
+}
+@section footerJS{
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAk3Eeu6MXm1Y6qil2hO6j89kckY5nnSTo"></script>
+    <script src="/Assets/client/js/controller/contact.js"></script>
+}
+<!--css của thằng googleMaps-->
+<link href="@BotDetect.Web.CaptchaUrls.LayoutStyleSheetUrl" rel="stylesheet" type="text/css">
+
+<style>
+    #map {
+        height: 400px;
+    }
+</style>
+<input type="hidden" id="hidAddress" value="@Model.contactDetail.Name<br/>Điện thoại:@Model.contactDetail.Phone <br>Địa chỉ: @Model.contactDetail.Address" />
+<input type="hidden" id="hidLat" value="@Model.contactDetail.Lat" />
+<input type="hidden" id="hidLng" value="@Model.contactDetail.Lng">
+<input type="hidden" id="hidName" value="@Model.contactDetail.Name">
+<div class="main">
+    <!--google maps-->
+    <div class="reservation_top">
+        <div class=" contact_right">
+            <h3>Thông tin liên hệ</h3>
+            <div class="contact-form">
+                <address class="address">
+                    <p>@Model.contactDetail.Name</p>
+                    <dl>
+                        <dt> </dt>
+                        <dd>Điện thoại:<span>@Model.contactDetail.Phone</span></dd>
+                        <dd>Email:&nbsp;<a href="mailto:@(Model.contactDetail.Email)">@(Model.contactDetail.Email)</a></dd>
+                    </dl>
+                </address>
+                <div class="clearfix"></div>
+                <div id="map">
+                    <!--load google map ở đây-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="reservation_top">
+        <div class=" contact_right">
+            <h3>Gửi thông tin liên hệ</h3>
+            @{
+                MvcCaptcha ContactCaptcha = new MvcCaptcha("ContactCaptcha");
+            }
+            <div class="contact-form">
+                @using (Html.BeginForm("SendFeedback", "Contact", FormMethod.Post))
+                {
+                    if (ViewData["SuccessMsg"] != null)
+                    {
+                        <div class="alert alert-success" role="alert">
+                            <div>
+                                <strong>Chúc mừng bạn !</strong> gửi phản hồi thành công.
+                                <br />Chúng tôi sẽ liên hệ lại sớm nhất có thể.
+                            </div>
+                        </div>
+                    }
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" });
+                    @Html.TextBoxFor(model => model.Name, new { @class = "textbox" });
+                    @Html.TextBoxFor(model => model.Email, new { @class = "textbox" });
+                    @Html.TextAreaFor(model => model.Message);
+
+                    @Html.Captcha(ContactCaptcha);
+                    @Html.TextBox("CaptchaCode");
+
+                    <input type="submit" value="Gửi đi" />
+                    <div class="clear"></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
